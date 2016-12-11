@@ -5,9 +5,48 @@
 
 let s = process.argv[2];
 let n = s.length;
-let res = longestPalindrome(s,n);
-console.log('longestPalindrome : ',res);
+let res1 = longestPalindrome(s,n);
+console.log('longestPalindrome : ',res1);
 
+let res2 = manacher(s,n);
+console.log('manacher : ',res2);
+
+//manacher init
+function manacher(s,n){
+  s = `#${s.split('').join('#')}#`;
+  // console.log('init s>>>',s);
+  n = s.length;
+  
+  let resP = longestPalindromeManacher(s,n);
+  // console.log('resP>>>',resP);
+  return Math.max.apply(this,resP)-1
+}
+
+//mamacher
+function longestPalindromeManacher(s,n){
+  let i, id=1, mx=0, p=[];
+  p[0] = 1;
+  for(i=1; i < n; i++){
+    if(mx > i){
+      p[i] = Math.min(p[2*id-i],mx-i);
+    }
+    else{
+      p[i] = 1;
+    }
+    while (s[i+p[i]] == s[i-p[i]]) {
+      p[i]++
+    }
+    
+    if(p[i]+i > mx){
+      mx = p[i]+i;
+      id = i;
+    }
+  }
+  return p;
+}
+
+
+//中心扩展法
 function longestPalindrome(s,n){
   let i,j,max=0,c;
   
